@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="estilo.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="scripts.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <button id="btnNovaCat" class="botoes">Nova Categoria</button>
+    <button id="btnNovoProduto" class="botoes">Novo Produto</button>
+    <button id="btnGerenciar" class="botoes">Gerenciar Produtos</button>
+
+    <div id="carregando">
+        <img src="loading.gif" height="80">
+    </div>
+
+    <div id="conteudo">
+    </div>
+
+    <div class="escurecer" id="formCadCategoria">
+        <div class="formulario">
+            <button id="btnFecharCat">x</button><br><br>
+            <h1>Cadastrar Categoria</h1>
+            <input type="text" id="caixaCategoria"> <br><br>
+            <button id="btnCadastrarCat">Cadastrar</button>
+        </div>
+    </div>
+
+    <div class="escurecer" id="formCadProduto">
+        <div class="formulario">
+            <button id="btnFecharPro">x</button><br><br>
+            <h1>Cadastrar Produto</h1>
+            Nome: <br>
+            <input type="text" id="caixaNomeProduto"> <br><br>
+
+            Preço: <br>
+            <input type="number" step="0.01" id="caixaPreco"> <br><br>
+
+            Categoria: <br>
+            <select id="caixaCategoria2">
+            </select> <br><br>
+
+            <button id="btnCadastrarProduto">Carregar</button>
+        </div>
+    </div>
+
+    <script>
+
+        $(document).ready(function () {
+            $("#formEdit").hide();
+            $(document).on("click", "#cartoes", function () {
+                $("#formEdit").show();
+
+
+                var nome_capturapr = $(this).find("#nome_produto").text(); 
+                var nome_capturacat = $(this).find("#nome_categoria").text(); 
+                var preco_captura = $(this).find("#preco").text(); 
+
+
+
+                $("#caixaNomeProduto3").val(nome_capturapr);
+                $("#caixaCategoria3").val(nome_capturacat);
+                $("#caixaPreco3").val(preco_captura);
+
+
+
+            });
+            $("#btnCadastrarCat").click(function () {
+
+                var nome_capturado = $("#caixaCategoria").val();
+                $("#formCadCategoria").hide();
+                $("#carregando").show();
+                $.ajax({
+                    type: "POST",
+                    url: "cadastraCategoria.php",
+                    data: {
+                        nome_categoria: nome_capturado
+                    },
+                    success: function (resposta) {
+                        alert(resposta);
+                        $("#carregando").hide();
+                        $.get("consultarCategoria.php", function (resposta) {
+                            $("#caixaCategoria2").html(resposta);
+                        });
+                    },
+                    error: function () {
+                        alert("Erro ao cadastrar a categoria!");
+                    }
+                });
+            });
+            $.get("consultarCategoria.php", function (resposta) {
+                $("#caixaCategoria2").html(resposta);
+                $("#caixaCategoria3").html(resposta);
+            });
+        });
+        $("#btnGerenciar").click(function () {
+            $("#conteudo").html("Carregando...");
+            $("#conteudo").load("colsultarPord.php");
+        });
+
+
+    </script>
+
+    <div class="escurecer" id="formEdit">
+        <div class="formulario">
+            <button id="btnFecharEdit">x</button><br><br>
+            <h1>Editar Produto</h1>
+            Nome: <br>
+            <input type="text" id="caixaNomeProduto3"> <br><br>
+
+            Preço: <br>
+            <input type="number" step="0.01" id="caixaPreco3"> <br><br>
+
+            Categoria: <br>
+            <select id="caixaCategoria3">
+            </select> <br><br>
+
+            <button id="bntsalvarAlteracao">Salvar Alterações</button>
+            <button id="bntDeletar">Deletar</button>
+        </div>
+    </div>
+
+</body>
+
+</html>
